@@ -3,9 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="MathEconLib: machine-checked formalizations of mathematical economics in Lean 4, built on Mathlib. Home of auctionlib.">
-<meta name="color-scheme" content="light dark">
 <title>MathEconLib</title>
+<meta name="description" content="MathEconLib: machine-checked mathematical economics in Lean 4. Home of auctionlib, a formalization of auction theory and mechanism design built on Mathlib.">
+<meta name="color-scheme" content="light dark">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MathEconLib">
+<meta property="og:description" content="Machine-checked mathematical economics in Lean 4. Home of auctionlib.">
+<meta property="og:url" content="https://morankor.github.io/MathEconLib/">
+<meta property="og:site_name" content="MathEconLib">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%231B6B5E'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-size='34' font-weight='600' text-anchor='middle' fill='%23F6F7F5'%3EME%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -19,7 +26,6 @@
     --rule: #D3DAD6;
     --rule-strong: #A9B4AF;
     --code-bg: #EBEFEC;
-    --done: #1B6B5E;
     --todo: #A2632A;
     --note-bg: #FBF3E4;
     --note-rule: #E0C58F;
@@ -35,7 +41,6 @@
       --rule: #26302C;
       --rule-strong: #3E4B46;
       --code-bg: #1A211E;
-      --done: #63C2A9;
       --todo: #D9A059;
       --note-bg: #2A2318;
       --note-rule: #5A4A2A;
@@ -51,7 +56,6 @@
     --rule: #26302C;
     --rule-strong: #3E4B46;
     --code-bg: #1A211E;
-    --done: #63C2A9;
     --todo: #D9A059;
     --note-bg: #2A2318;
     --note-rule: #5A4A2A;
@@ -75,6 +79,7 @@
     font-size: 0.88em;
   }
   code { background: var(--code-bg); padding: 0.1em 0.35em; border-radius: 3px; }
+  a > code { color: inherit; }
   pre {
     background: var(--code-bg);
     padding: 1rem 1.1rem;
@@ -94,7 +99,7 @@
   }
   .wordmark {
     font-family: "IBM Plex Serif", Georgia, serif;
-    font-weight: 600; font-size: 1.35rem; letter-spacing: -0.01em;
+    font-weight: 600; font-size: 1.2rem; letter-spacing: -0.01em;
     color: var(--ink); border: 0;
   }
   nav.top ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.2rem 1.2rem; }
@@ -108,18 +113,21 @@
     border: 1px solid var(--note-rule);
     border-radius: 3px;
     font-size: 0.9rem;
-    color: var(--ink);
   }
   .draft strong { font-weight: 600; }
 
   h1 {
     font-family: "IBM Plex Serif", Georgia, serif;
-    font-weight: 500; font-size: 2.1rem; line-height: 1.15;
-    letter-spacing: -0.015em; text-wrap: balance;
-    margin: 2.6rem 0 0.8rem;
+    font-weight: 600; font-size: 3rem; line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 2.8rem 0 0.4rem;
   }
-  .lede { font-size: 1.15rem; line-height: 1.55; color: var(--ink); margin: 0 0 1rem; max-width: 40rem; }
-  .lede + p { margin-top: 0; }
+  .tagline {
+    font-family: "IBM Plex Serif", Georgia, serif;
+    font-size: 1.5rem; line-height: 1.3; font-weight: 400;
+    color: var(--muted); margin: 0 0 1.6rem; text-wrap: balance; max-width: 34rem;
+  }
+  .lede { font-size: 1.25rem; line-height: 1.5; margin: 0 0 1.1rem; max-width: 40rem; }
 
   h2 {
     font-family: "IBM Plex Serif", Georgia, serif;
@@ -137,34 +145,34 @@
   ul, ol { padding-left: 1.3rem; margin: 0 0 1rem; max-width: 40rem; }
   li { margin-bottom: 0.35rem; }
 
-  .layers {
-    display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1.2rem;
-    margin: 1.2rem 0 1.4rem; padding: 1rem 1.1rem;
-    background: var(--code-bg); border-radius: 3px;
-    font-size: 0.95rem; align-items: baseline;
+  .stack { list-style: none; padding: 0; margin: 1.2rem 0 1.4rem; max-width: 40rem; }
+  .stack .layer {
+    display: grid; grid-template-columns: minmax(9rem, max-content) 1fr; gap: 0.2rem 1.2rem; align-items: baseline;
+    padding: 0.7rem 1rem; background: var(--code-bg); border-radius: 3px; margin: 0;
   }
-  .layers code { background: none; padding: 0; font-weight: 500; color: var(--accent-ink); }
-  .layers .arrow { grid-column: 1 / -1; color: var(--muted); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; padding-left: 0.1rem; }
+  .stack .layer code { background: none; padding: 0; font-weight: 500; color: var(--accent-ink); }
+  .stack .step {
+    margin: 0; padding: 0.3rem 0 0.3rem 1rem;
+    color: var(--muted); font-size: 0.86rem;
+  }
+  .stack .step::before { content: "↓  "; color: var(--accent); font-weight: 600; }
+  @media (max-width: 30rem) { .stack .layer { grid-template-columns: 1fr; } }
 
-  .tbl-wrap { overflow-x: auto; margin: 1rem 0 1.4rem; }
+  .tbl-wrap { overflow-x: auto; margin: 1rem 0 1rem; }
   table { border-collapse: collapse; width: 100%; font-size: 0.93rem; }
   th, td { text-align: left; vertical-align: top; padding: 0.55rem 0.8rem 0.55rem 0; border-bottom: 1px solid var(--rule); }
   th { font-weight: 600; font-size: 0.78rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--rule-strong); }
   td code { white-space: nowrap; }
-
-  .status { list-style: none; padding: 0; }
-  .status li { display: grid; grid-template-columns: 1.4rem 1fr; gap: 0.5rem; }
-  .status .mark { font-family: "IBM Plex Mono", monospace; font-weight: 500; }
-  .status .done .mark { color: var(--done); }
-  .status .todo .mark { color: var(--todo); }
 
   dl.docs { margin: 0 0 1rem; max-width: 40rem; }
   dl.docs dt { font-weight: 500; margin-top: 0.9rem; }
   dl.docs dd { margin: 0.1rem 0 0; color: var(--muted); font-size: 0.95rem; }
 
   .people { list-style: none; padding: 0; margin: 0 0 1rem; columns: 2; column-gap: 2rem; max-width: 40rem; }
-  .people li { break-inside: avoid; margin-bottom: 0.55rem; }
+  .people li { break-inside: avoid; margin-bottom: 0.7rem; }
   .people .aff { display: block; color: var(--muted); font-size: 0.9rem; }
+  .people .handle { font-family: "IBM Plex Mono", monospace; font-size: 0.82rem; color: var(--muted); border-bottom-color: var(--rule); }
+  .people .handle:hover { color: var(--accent); }
   @media (max-width: 34rem) { .people { columns: 1; } }
 
   .placeholder { color: var(--todo); font-style: italic; }
@@ -178,147 +186,130 @@
 </style>
 </head>
 <body>
-
 <div class="page">
   <header class="top">
     <a class="wordmark" href="#top">MathEconLib</a>
     <nav class="top" aria-label="Sections">
       <ul>
         <li><a href="#about">About</a></li>
-        <li><a href="#libraries">Libraries</a></li>
+        <li><a href="#auctionlib">auctionlib</a></li>
         <li><a href="#docs">Docs</a></li>
         <li><a href="#contribute">Contribute</a></li>
         <li><a href="#roadmap">Roadmap</a></li>
         <li><a href="#people">People</a></li>
+        <li><a href="#cite">Cite</a></li>
         <li><a href="https://github.com/AxiomMath/auctionlib">GitHub</a></li>
       </ul>
     </nav>
   </header>
 
-  <p class="draft"><strong>Collaborator draft, 9 September 2026.</strong> Content is taken from the current <code>auctionlib</code> README, CONTRIBUTING guide, and git history. Items in <span class="placeholder">amber italics</span> are placeholders to confirm or fill in. The project name is provisional.</p>
+  <p class="draft"><strong>Collaborator draft.</strong> Items in <span class="placeholder">amber italics</span> need confirming. The name MathEconLib is provisional.</p>
 
   <main id="top">
-    <h1 id="about">Machine-checked mathematical economics, built on Mathlib.</h1>
-    <p class="lede">MathEconLib is a family of Lean 4 libraries that formalize the core results of economic theory, starting with auctions and mechanism design. Every theorem is verified by the Lean kernel and rests on <a href="https://github.com/leanprover-community/mathlib4">Mathlib</a>, so the definitions compose with the rest of formal mathematics rather than living in a silo.</p>
-    <p>The library separates three things that textbooks usually blend: the rules of a mechanism, the probabilistic environment it sits in, and the interim optimization problem each agent faces. Keeping those layers apart is what lets a single envelope theorem or payment identity serve auctions, posted prices, and other single-parameter problems without re-proving it each time.</p>
-    <p>This site is the public face of the project: a stable place to point people at, a home for the documentation, and a record of who works on what. Development happens in the GitHub repositories.</p>
+    <h1 id="about">MathEconLib</h1>
+    <p class="tagline">Machine-checked mathematical economics.</p>
+    <p class="lede">MathEconLib is the home of <a href="#auctionlib">auctionlib</a>, a formalization of auction theory and mechanism design in the Lean 4 proof assistant, and of the further libraries that will follow it.</p>
+    <p>A machine-checked theorem is one whose statement and proof have been verified by a small, trusted kernel. There is no step the reader has to take on faith and no hypothesis that can go unstated: if the proof compiles, the theorem holds exactly as written. For economic theory, where results are reused across many papers with slightly different assumptions, that precision is the point. The library records the exact conditions under which the envelope theorem, Myerson's lemma, or revenue equivalence hold, and any downstream result inherits them automatically.</p>
+    <p>Everything is built on <a href="https://github.com/leanprover-community/mathlib4">Mathlib</a>, the community library of formal mathematics, so probability, measure theory, and analysis come from the same source the rest of the formal-mathematics world uses. The project is developed with <a href="https://axiommath.ai">Axiom Math</a>. <span class="placeholder">[One sentence on the role of AI-assisted formalization in the project, to confirm.]</span></p>
+    <p>This site is the stable place to point people at, a home for the documentation, and a record of who works on what. Development happens on GitHub.</p>
 
-    <h2 id="libraries">Libraries</h2>
-    <h3>auctionlib</h3>
-    <p>The first and currently only library. It formalizes the single-parameter theory of auctions and pricing, from incentive compatibility through revenue equivalence, plus the game-theoretic foundations those results assume. Toolchain: Lean 4.28.0, Mathlib v4.28.0.</p>
+    <h2 id="auctionlib">auctionlib</h2>
+    <p>The first library. It formalizes the single-parameter theory of auctions and pricing, from incentive compatibility through revenue equivalence, together with the game-theoretic foundations those results assume. The repository is currently private; <span class="placeholder">[maintainer]</span> grants access.</p>
+    <p>The library keeps apart three things that textbooks usually blend:</p>
 
-    <div class="layers" aria-label="Architecture layers">
-      <code>Mechanism n</code><span>allocation rule <em>x</em> and payment rule <em>t</em> over report vectors</span>
-      <span class="arrow">plus a type environment on (Ω, ℙ)</span>
-      <code>Auction Ω n</code><span>mechanism together with random types and their distributions</span>
-      <span class="arrow">fix one bidder and the opponents' strategy</span>
-      <code>BidderProblem</code><span>one bidder's interim view: win probability, cost, strategy</span>
-      <span class="arrow">generalized by</span>
-      <code>SingleParameterProblem</code><span>any affine-in-type quasilinear choice problem, <em>u</em>(<em>v</em>,<em>a</em>) = <em>v</em>·<em>x</em>(<em>a</em>) − <em>t</em>(<em>a</em>)</span>
-    </div>
+    <ol class="stack" aria-label="Architecture layers">
+      <li class="layer"><code>Mechanism n</code><span>the rules of the game: an allocation rule <em>x</em> and a payment rule <em>t</em> over the vector of reports</span></li>
+      <li class="step">add random types for each bidder on a probability space (Ω, ℙ)</li>
+      <li class="layer"><code>Auction Ω n</code><span>a mechanism inside its probabilistic environment</span></li>
+      <li class="step">fix one bidder and the strategy the others play</li>
+      <li class="layer"><code>BidderProblem</code><span>that bidder's interim decision problem: win probability, cost, strategy</span></li>
+    </ol>
+    <p>A <code>BidderProblem</code> is a special case of a <code>SingleParameterProblem</code>, which covers any quasilinear problem with payoff <em>u</em>(<em>v</em>,<em>a</em>) = <em>v</em>·<em>x</em>(<em>a</em>) − <em>t</em>(<em>a</em>), whether the action is a bid, a report, a contract choice, or a purchase decision. The envelope theorem and the payment identity are proved once at that level and reused by every application.</p>
 
-    <p>Incentive compatibility is a typeclass chain, <code>HasUniversalIC ⇒ HasTypeDeviationIC ⇒ HasEnvelopeIC</code>, so a result proved under the weakest notion is available automatically under the stronger ones.</p>
-
-    <h3>Main results</h3>
+    <h3>Headline results</h3>
     <div class="tbl-wrap">
       <table>
         <thead><tr><th>Result</th><th>Where</th></tr></thead>
         <tbody>
-          <tr><td>Envelope theorem: <em>U</em> is Lipschitz, <em>U′</em> = <em>q</em> a.e., integral representation</td><td><code>BidderProblem/EnvelopeIC</code></td></tr>
-          <tr><td>Myerson's lemma, including the sufficiency direction</td><td><code>BidderProblem/TypeDeviationIC</code></td></tr>
-          <tr><td>Payment equivalence for BIC auctions with the same interim allocation</td><td><code>Auction/Basic</code></td></tr>
-          <tr><td>Revenue equivalence; total revenue equals E[<em>S</em><sub>2</sub>] under symmetric IPV</td><td><code>Auction/RevenueEquivalence</code></td></tr>
-          <tr><td>Strict monotonicity of equilibrium strategies under positive density</td><td><code>Auction/StrictMonotonicity</code></td></tr>
-          <tr><td>Seller-profit virtual-surplus representation; posted-price optimality conditions</td><td><code>ValueDistribution/</code></td></tr>
-          <tr><td>All-purchase auctions: explicit equilibria, revenue and welfare decompositions, optimal pricing</td><td><code>Auction/AllPurchase/</code></td></tr>
-          <tr><td>Affiliation equals log-supermodularity; finite winner's-curse inequality</td><td><code>Auction/Affiliation/</code></td></tr>
-          <tr><td>Pure and mixed Nash existence, via Kakutani–Glicksberg–Fan</td><td><code>GameTheory/NashExistence</code></td></tr>
-          <tr><td>Order statistics; Kakutani and Schauder fixed-point theorems (for upstreaming)</td><td><code>Statistics/</code>, <code>ForMathlib/</code></td></tr>
+          <tr><td>Envelope theorem: <em>U</em> is Lipschitz, <em>U′</em> = <em>q</em> almost everywhere, integral representation</td><td><a href="https://github.com/AxiomMath/auctionlib/blob/main/Auctionlib/BidderProblem/EnvelopeIC.lean"><code>BidderProblem/EnvelopeIC</code></a></td></tr>
+          <tr><td>Myerson's lemma, both directions</td><td><a href="https://github.com/AxiomMath/auctionlib/blob/main/Auctionlib/BidderProblem/TypeDeviationIC.lean"><code>BidderProblem/TypeDeviationIC</code></a></td></tr>
+          <tr><td>Revenue equivalence; expected revenue equals E[<em>S</em><sub>2</sub>] under symmetric independent private values</td><td><a href="https://github.com/AxiomMath/auctionlib/blob/main/Auctionlib/Auction/RevenueEquivalence.lean"><code>Auction/RevenueEquivalence</code></a></td></tr>
+          <tr><td>Seller profit as expected virtual surplus; posted-price optimality conditions</td><td><a href="https://github.com/AxiomMath/auctionlib/tree/main/Auctionlib/ValueDistribution"><code>ValueDistribution/</code></a></td></tr>
+          <tr><td>All-purchase auctions: explicit equilibria, revenue and welfare decompositions, optimal pricing</td><td><a href="https://github.com/AxiomMath/auctionlib/tree/main/Auctionlib/Auction/AllPurchase"><code>Auction/AllPurchase/</code></a></td></tr>
+          <tr><td>Winner's-curse inequality for affiliated signals on finite lattices</td><td><a href="https://github.com/AxiomMath/auctionlib/blob/main/Auctionlib/Auction/Affiliation/WinnersCurse.lean"><code>Auction/Affiliation/WinnersCurse</code></a></td></tr>
+          <tr><td>Existence of pure and mixed Nash equilibria, via Kakutani–Glicksberg–Fan</td><td><a href="https://github.com/AxiomMath/auctionlib/blob/main/Auctionlib/GameTheory/NashExistence.lean"><code>GameTheory/NashExistence</code></a></td></tr>
         </tbody>
       </table>
     </div>
-    <p>Every result compiles without <code>sorry</code>, and <code>#print axioms</code> on the main theorems shows only <code>propext</code>, <code>Classical.choice</code>, and <code>Quot.sound</code>. Public statements are pinned in <code>ApiStability.lean</code>, so a change to any core theorem breaks the build loudly rather than silently.</p>
-
-    <h3>Planned libraries</h3>
-    <p><span class="placeholder">[To decide: which areas come next, e.g. matching, social choice, general equilibrium, information design. List them here once the scope is agreed.]</span></p>
+    <p>The <a href="https://github.com/AxiomMath/auctionlib/blob/main/README.md">README</a> indexes every file and theorem and is the authoritative list; this page shows only the headline results.</p>
+    <p>Every result compiles without <code>sorry</code>, and <code>#print axioms</code> on the main theorems shows only <code>propext</code>, <code>Classical.choice</code>, and <code>Quot.sound</code>. The statements of the core theorems are pinned in a separate file that the build checks, so a change to any public statement breaks the build loudly rather than silently.</p>
 
     <h2 id="docs">Documentation</h2>
     <dl class="docs">
       <dt><a href="https://github.com/AxiomMath/auctionlib/blob/main/docs/BeginnersManual.md">Lean 4 and auctionlib: A Beginner's Manual</a></dt>
-      <dd>From installing the toolchain to reading <code>BidderProblem/Basic.lean</code> line by line, with runnable exercises. Assumes no Lean and no auction theory.</dd>
+      <dd>From installing the toolchain to reading the bidder-problem file line by line, with runnable exercises. Assumes no Lean and no auction theory.</dd>
       <dt><a href="https://github.com/AxiomMath/auctionlib/blob/main/docs/PricingArchitecture.md">Pricing Foundations: Mathematical Model and Architecture</a></dt>
       <dd>How the auction layers extend to posted pricing and other single-parameter problems.</dd>
       <dt><a href="https://github.com/AxiomMath/auctionlib/blob/main/README.md">auctionlib README</a></dt>
       <dd>File-by-file index of definitions and theorems, with build instructions.</dd>
       <dt>Auction Theory: introduction and sketch of formalization objectives</dt>
-      <dd>Scott Kominers' evolving mathematical overview that guides the auction development. <span class="placeholder">[Currently an Overleaf project; decide whether to publish a PDF here.]</span></dd>
+      <dd>Scott Duke Kominers' evolving mathematical overview that guides the auction development. <span class="placeholder">[Currently an Overleaf project; decide whether to publish a PDF here.]</span></dd>
       <dt><span class="placeholder">[API reference]</span></dt>
-      <dd>Generated <code>doc-gen4</code> documentation for every declaration, once the repository is public.</dd>
+      <dd>Generated documentation for every declaration, once the repository is public.</dd>
     </dl>
 
     <h2 id="contribute">Contributing</h2>
-    <p>Contributions are welcome. New theorems in existing chapters, documentation, and applications built on the existing layers can go straight to a pull request. The <code>ForMathlib/</code> folder, which holds results destined for upstream, is a good first contribution.</p>
-    <p>Changes to the foundational layers (<code>Mechanism/</code>, <code>BidderProblem/</code>, <code>GameTheory/</code>, <code>Auction/Basic.lean</code>) start with a design issue: sketch the definitions and main statements and get agreement on the shape before writing proofs.</p>
-    <h3>Verification bar for every PR</h3>
-    <ul>
-      <li><code>lake build</code> is green.</li>
-      <li>No <code>sorry</code>, <code>admit</code>, or <code>native_decide</code> anywhere in the change.</li>
-      <li><code>#print axioms</code> on new main results shows only the three standard axioms.</li>
-      <li>Imports regenerated with <code>lake exe mk_all --lib Auctionlib --git</code>.</li>
-    </ul>
-    <p>The full guide is in <a href="https://github.com/AxiomMath/auctionlib/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. <span class="placeholder">[Add: where discussion happens, e.g. a Zulip stream or GitHub Discussions.]</span></p>
+    <p>New theorems in existing chapters, documentation, and applications built on the existing layers can go straight to a pull request. Results destined for Mathlib, kept in the <code>ForMathlib</code> folder, are a good first contribution.</p>
+    <p>Changes to the foundational layers start with a design issue: sketch the definitions and main statements and get agreement on the shape before writing proofs. Every pull request must build cleanly, contain no <code>sorry</code>, <code>admit</code>, or <code>native_decide</code>, and add no axioms beyond the standard three.</p>
+    <p>The full rules are in <a href="https://github.com/AxiomMath/auctionlib/blob/main/CONTRIBUTING.md">CONTRIBUTING.md</a>. Questions go to the person listed under <a href="#people">People</a>, or <span class="placeholder">[discussion venue, e.g. a Zulip stream or GitHub Discussions]</span>.</p>
 
     <h2 id="roadmap">Roadmap</h2>
-    <ul class="status">
-      <li class="done"><span class="mark">✓</span><span>Single-parameter foundations and a deterministic fixed-price buyer problem</span></li>
-      <li class="done"><span class="mark">✓</span><span>Measure-first value distributions, seller-profit decompositions, posted-price first-order conditions</span></li>
-      <li class="done"><span class="mark">✓</span><span>Mechanism, Auction, and BidderProblem framework; envelope theorem, Myerson's lemma, revenue equivalence</span></li>
-      <li class="done"><span class="mark">✓</span><span>All-purchase equilibria, explicit solutions, revenue and welfare analysis, optimal pricing</span></li>
-      <li class="done"><span class="mark">✓</span><span>Normal-form games and pure and mixed Nash existence</span></li>
-      <li class="done"><span class="mark">✓</span><span>Affiliation, log-supermodularity, finite monotone conditional expectations, finite winner's curse</span></li>
-      <li class="todo"><span class="mark">○</span><span>Riley–Zeckhauser comparison of posted prices with general selling rules</span></li>
-      <li class="todo"><span class="mark">○</span><span>Posted-price comparative statics, starting with uniform-distribution parameters</span></li>
-      <li class="todo"><span class="mark">○</span><span>Continuous affiliation results and the Linkage Principle</span></li>
-      <li class="todo"><span class="mark">○</span><span>Revelation principle over abstract message spaces</span></li>
-      <li class="todo"><span class="mark">○</span><span>Extensive-form and obviously strategy-proof mechanisms</span></li>
-      <li class="todo"><span class="mark">○</span><span>Multi-unit and simultaneous ascending auction models</span></li>
+    <p>Open directions, in rough order of priority. Completed work is listed above.</p>
+    <ul>
+      <li>Riley–Zeckhauser comparison of posted prices with general selling rules</li>
+      <li>Posted-price comparative statics, starting with uniform-distribution parameters</li>
+      <li>Continuous affiliation results and the Linkage Principle</li>
+      <li>Revelation principle over abstract message spaces</li>
+      <li>Extensive-form and obviously strategy-proof mechanisms</li>
+      <li>Multi-unit and simultaneous ascending auction models</li>
+      <li><span class="placeholder">[Further libraries beyond auctions, once the scope is agreed]</span></li>
     </ul>
 
     <h2 id="people">People</h2>
     <h3>Core contributors</h3>
-    <p>Listed alphabetically. <span class="placeholder">[Affiliations and links to confirm with each person.]</span></p>
+    <p>Alphabetical. <span class="placeholder">[Affiliations and personal links to confirm with each person.]</span></p>
     <ul class="people">
-      <li>Ruiz Chen<span class="aff placeholder">[affiliation]</span></li>
-      <li>Bo Cowgill<span class="aff">Columbia Business School</span></li>
-      <li>Ben Eltschig<span class="aff placeholder">[affiliation]</span></li>
-      <li>Scott Duke Kominers<span class="aff">Harvard Business School</span></li>
-      <li>Moran Koren<span class="aff placeholder">[affiliation]</span></li>
-      <li>Jujian Zhang<span class="aff">Axiom Math</span></li>
+      <li>Ruiz Chen<span class="aff placeholder">[affiliation]</span><a class="handle" href="https://github.com/Ruizsolveall">@Ruizsolveall</a></li>
+      <li>Bo Cowgill<span class="aff">Columbia Business School</span><a class="handle" href="https://github.com/bocowgill">@bocowgill</a></li>
+      <li>Ben Eltschig<span class="aff placeholder">[affiliation]</span><a class="handle" href="https://github.com/peabrainiac">@peabrainiac</a></li>
+      <li>Scott Duke Kominers<span class="aff">Harvard Business School</span><a class="handle" href="https://github.com/scduko">@scduko</a></li>
+      <li>Moran Koren<span class="aff placeholder">[affiliation]</span><a class="handle" href="https://github.com/morankor">@morankor</a></li>
+      <li>Jujian Zhang<span class="aff">Axiom Math</span><a class="handle" href="https://github.com/jjaassoonn">@jjaassoonn</a></li>
     </ul>
 
     <h3>Who to ask</h3>
-    <p>Derived from who has written or reviewed each part of the library. <span class="placeholder">[Please correct.]</span></p>
+    <p>Based on who has written each part of the library. Reach people through their GitHub handle above. <span class="placeholder">[Please correct.]</span></p>
     <div class="tbl-wrap">
       <table>
         <thead><tr><th>Topic</th><th>Contact</th></tr></thead>
         <tbody>
           <tr><td>Mathematical scope and the formalization roadmap</td><td>Scott Duke Kominers</td></tr>
-          <tr><td>Core framework: <code>Mechanism</code>, <code>Auction</code>, <code>BidderProblem</code>, revenue equivalence</td><td>Jujian Zhang</td></tr>
-          <tr><td>Value distributions, posted pricing, single-parameter layer, documentation</td><td>Bo Cowgill</td></tr>
+          <tr><td>Core framework: mechanisms, auctions, bidder problems, revenue equivalence</td><td>Jujian Zhang</td></tr>
+          <tr><td>Value distributions, posted pricing, the single-parameter layer, documentation</td><td>Bo Cowgill</td></tr>
           <tr><td>All-purchase auctions, affiliation, winner's curse</td><td>Ruiz Chen</td></tr>
           <tr><td>Game theory, Nash existence, fixed-point theorems for Mathlib</td><td>Ben Eltschig</td></tr>
-          <tr><td>Revelation principle, onboarding for economists new to Lean</td><td>Moran Koren</td></tr>
-          <tr><td>Repository access, CI, toolchain</td><td><span class="placeholder">[maintainer]</span></td></tr>
+          <tr><td>Revelation principle; onboarding for economists new to Lean</td><td>Moran Koren</td></tr>
+          <tr><td>Repository access, continuous integration, toolchain</td><td><span class="placeholder">[maintainer]</span></td></tr>
         </tbody>
       </table>
     </div>
 
     <h3>Acknowledgments</h3>
-    <p>MathEconLib is developed with <a href="https://axiommath.ai">Axiom Math</a>. <span class="placeholder">[Add funders, institutions, and individuals to acknowledge.]</span></p>
+    <p>MathEconLib is developed with <a href="https://axiommath.ai">Axiom Math</a>. <span class="placeholder">[Funders, institutions, and individuals to acknowledge.]</span></p>
 
     <h2 id="cite">Citing</h2>
-    <p>If you use the library in academic work, please cite it. <span class="placeholder">[Finalize author list, and mint a Zenodo DOI once the repository is public.]</span></p>
-<pre><code>@software{mathecon_auctionlib_2026,
+    <p>If you use the library in academic work, please cite it. <span class="placeholder">[Finalize the author list, and mint a Zenodo DOI once the repository is public.]</span></p>
+<pre><code>@software{auctionlib2026,
   author = {Chen, Ruiz and Cowgill, Bo and Eltschig, Ben and
             Kominers, Scott Duke and Koren, Moran and Zhang, Jujian},
   title  = {auctionlib: A Lean 4 formalization of auction theory},
@@ -329,9 +320,10 @@
   </main>
 
   <footer>
-    <span>MathEconLib, 2026</span>
+    <span>MathEconLib</span>
+    <span>Updated 9 September 2026</span>
     <span>License: <span class="placeholder">[to decide; Mathlib uses Apache 2.0]</span></span>
-    <a href="https://github.com/AxiomMath/auctionlib">github.com/AxiomMath/auctionlib</a>
+    <a href="https://github.com/morankor/MathEconLib">Site source</a>
   </footer>
 </div>
 </body>
